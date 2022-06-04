@@ -30,3 +30,27 @@ class User(AbstractUser):
 
     def str(self):
         return self.username[:30]
+
+
+class Follow(models.Model):
+    """Table with subscriptions."""
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='follower',
+        verbose_name='Подписчик',
+    )
+    following = models.ForeignKey(
+        to=User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='following',
+        verbose_name='Автор рецепта',
+    )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
+    def __str__(self) -> str:
+        return f'{self.user} подписан на автора {self.author}'
