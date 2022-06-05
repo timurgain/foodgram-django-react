@@ -19,16 +19,17 @@ class User(AbstractUser):
         default=ROLES.user,
         max_length=max(len(role) for _, role in ROLE_CHOICES),
     )
+    first_name = models.CharField(max_length=150, blank=True)
 
     class Meta:
         ordering = ['username']
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
-    def is_admin(self):
+    def is_admin(self) -> bool:
         return self.role == ROLES.admin
 
-    def str(self):
+    def __str__(self) -> str:
         return self.username[:30]
 
 
