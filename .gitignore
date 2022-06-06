@@ -1,3 +1,6 @@
+api_tm_tester.rest
+api_tm_tester.html
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
