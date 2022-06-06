@@ -1,6 +1,4 @@
-from collections import namedtuple
-
-from backend.users.models import User
+from users.models import User
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
@@ -22,7 +20,7 @@ class Tag(models.Model):
             RegexValidator(
                 regex=r'^#(?:[0-9a-fA-F]{3}){1,2}$',
                 message='Ожидается цветовой HEX-код, например, #49B64E'
-            )
+            ),
         )
     )
     slug = models.SlugField(
@@ -33,7 +31,7 @@ class Tag(models.Model):
             RegexValidator(
                 regex=r'^[-a-zA-Z0-9_]+$',
                 message='Ожидается строка из цифр и букв'
-            )
+            ),
         )
     )
 
@@ -81,7 +79,7 @@ class Recipe(models.Model):
         verbose_name='Теги',
     )
     author = models.ForeignKey(
-        to='User',
+        to='users.User',
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='Автор',
@@ -104,7 +102,7 @@ class Recipe(models.Model):
         validators=(
             MinValueValidator(1, message='1 минута - минимальное значение'),
             MaxValueValidator(1440, message='1 день - максимальное значение'),
-        )
+        ),
     )
     created_at = models.DateTimeField(
         verbose_name='Дата публикации',
@@ -123,25 +121,23 @@ class Recipe(models.Model):
             models.UniqueConstraint(
                 fields=('name', 'author'),
                 name='unique_recipename_author'
-            )
+            ),
         )
 
     def __str__(self) -> str:
         return self.name[:30]
 
 
-class IngredientInRecipe(models.Model):  # <<< ! >>>
+class IngredientInRecipe(models.Model):
     """Ingredient table with its quantity."""
     recipe = models.ForeignKey(
         to='Recipe',
         on_delete=models.CASCADE,
-        related_name='ingredients',
         verbose_name='Рецепт',
     )
     ingredient = models.ForeignKey(
         to='Ingredient',
         on_delete=models.CASCADE,
-        related_name='recipes',
         verbose_name='Инградиент',
     )
     amount = models.PositiveSmallIntegerField(
@@ -154,9 +150,9 @@ class IngredientInRecipe(models.Model):  # <<< ! >>>
 class BaseFavoriteCart(models.Model):  # <<< ! >>>
     """."""
     owner = models.ForeignKey(
-        to='User',
+        to='users.User',
         on_delete=models.CASCADE,
-        related_name='owner',
+        # related_name='owner',
         verbose_name='Владелец'
     )
     recipies = models.ManyToManyField(

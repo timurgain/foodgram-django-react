@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'django_filters',
+    'api_foodgram',
+    'foodgram',
     'users',
 ]
 

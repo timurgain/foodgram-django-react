@@ -1,6 +1,5 @@
 from django.urls import include, path, re_path
 from rest_framework import routers
-from backend.api_foodgram import views
 
 app_name = 'api_foodgram'
 
