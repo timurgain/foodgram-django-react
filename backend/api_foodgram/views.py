@@ -21,7 +21,7 @@ class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
 
 
-class IngredientViewSet(viewsets.ModelViewSet):
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer

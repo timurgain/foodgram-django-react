@@ -26,11 +26,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
     'django_filters',
-    'api_foodgram',
-    'foodgram',
-    'users',
+    'api_foodgram.apps.ApiFoodgramConfig',
+    'foodgram.apps.FoodgramConfig',
+    'users.apps.UsersConfig',
 ]
 
 REST_FRAMEWORK = {
@@ -38,7 +39,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.UserRateThrottle',
