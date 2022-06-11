@@ -55,13 +55,13 @@ REST_FRAMEWORK = {
 
 DJOSER = {
    'LOGIN_FIELD': 'email',
+   'HIDE_USERS': False,
    # https://djoser.readthedocs.io/en/latest/settings.html#serializers
    'SERIALIZERS': {
        'user_create': 'users.serializers.CustomUserCreateSerializer',
-       'token': 'djoser.serializers.TokenSerializer',
+       'user': 'users.serializers.CustomUserSerializer',
        'token_create': 'users.serializers.CustomTokenCreateSerializer',
    },
-
 }
 
 MIDDLEWARE = [
