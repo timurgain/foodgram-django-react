@@ -53,10 +53,16 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 5,
 }
 
-SIMPLE_JWT = {
-   'ACCESS_TOKEN_LIFETIME': timedelta(days=21),
-   'AUTH_HEADER_TYPES': ('Bearer',),
-} 
+DJOSER = {
+   'LOGIN_FIELD': 'email',
+   # https://djoser.readthedocs.io/en/latest/settings.html#serializers
+   'SERIALIZERS': {
+       'user_create': 'users.serializers.CustomUserCreateSerializer',
+       'token': 'djoser.serializers.TokenSerializer',
+       'token_create': 'users.serializers.CustomTokenCreateSerializer',
+   },
+
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

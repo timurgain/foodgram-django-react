@@ -1,4 +1,8 @@
 from django.urls import include, path, re_path
-from rest_framework import routers
 
 app_name = 'users'
+
+urlpatterns = [
+    path('', include('djoser.urls')),
+    re_path(r'^auth/', include('djoser.urls.authtoken')),
+]

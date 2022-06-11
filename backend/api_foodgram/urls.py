@@ -13,9 +13,6 @@ router_v1.register(
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-]
-
-urlpatterns += [
-    re_path(r'^auth/', include('djoser.urls')),
-    re_path(r'^auth/', include('djoser.urls.authtoken')),
+    # path('', include('djoser.urls')),
+    # re_path(r'^auth/', include('djoser.urls.authtoken')),
 ]
