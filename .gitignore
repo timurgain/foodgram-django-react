@@ -1,5 +1,7 @@
 api_tm_tester.rest
 api_tm_tester.html
+launch.json
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
