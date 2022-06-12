@@ -1,5 +1,8 @@
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
-from djoser.serializers import UserCreateSerializer, TokenCreateSerializer, UserSerializer
+from rest_framework.validators import UniqueTogetherValidator
+
+from .models import Subscription, User
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -21,16 +24,32 @@ class CustomUserSerializer(UserSerializer):
         )
 
 
-# class UserSerializer(serializers.ModelSerializer):
-#     """Serializer for model User."""
+class SubscriptionSerializer(serializers.ModelSerializer):
+    """Serializer for model Subscription."""
+    user = serializers.SlugRelatedField(
+        slug_field='username', read_only=True,
+        default=serializers.CurrentUserDefault(),
+    )
+    following = serializers.SlugRelatedField(
+        slug_field='username',
+        queryset=User.objects.all(),
+    )
 
-#     class Meta:
-#         model = User
-#         fields = (
-#             'email', 'id', 'username', 'first_name', 'last_name',
-#             # 'is_subscribed',
-#         )
+    class Meta:
+        model = Subscription
+        fields = ('user', 'following',)
 
+        validators = (
+            UniqueTogetherValidator(
+                queryset=Subscription.objects.all(),
+                fields=('user', 'following'),
+                message='You are already following that user.',
+            ),
+        )
 
-class CustomTokenCreateSerializer(TokenCreateSerializer):
-    pass
+    def validate(self, attrs):
+        request_user = self.context.get('request').user
+        following_user = attrs.get('following')
+        if request_user == following_user:
+            raise serializers.ValidationError("You can't follow yourself.")
+        return super().validate(attrs)
