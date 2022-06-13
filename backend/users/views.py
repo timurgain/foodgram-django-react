@@ -1,11 +1,13 @@
 from http import HTTPStatus
+
 from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from .models import User, Follow
-from .serializers import PostFollowSerializer, CustomDjoserUserSerializer
 from djoser.views import UserViewSet
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+
+from .models import Follow, User
+from .serializers import CustomDjoserUserSerializer, PostFollowSerializer
 
 
 class CustomUserViewSet(UserViewSet):

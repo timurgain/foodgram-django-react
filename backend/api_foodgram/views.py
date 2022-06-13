@@ -8,8 +8,8 @@ from api_foodgram.serializers import (FavoriteRecipesSerializer,
                                       ShoppingCartSerializer, TagSerializer,)
 
 
-class TagViewSet(viewsets.ModelViewSet):
-    """."""
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for Tag model in the foodgram app."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
