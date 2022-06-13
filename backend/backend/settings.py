@@ -61,8 +61,8 @@ DJOSER = {
    'HIDE_USERS': False,
    # https://djoser.readthedocs.io/en/latest/settings.html#serializers
    'SERIALIZERS': {
-       'user_create': 'users.serializers.CustomUserCreateSerializer',
-       'user': 'users.serializers.CustomUserSerializer',
+       'user_create': 'users.serializers.CustomDjoserUserCreateSerializer',
+       'user': 'users.serializers.CustomDjoserUserSerializer',
    },
    'PERMISSIONS': {
        'user': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],

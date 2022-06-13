@@ -1,11 +1,14 @@
-
-
+from http import HTTPStatus
+from django.forms import ValidationError
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 from rest_framework.response import Response
-from .models import User
-from .serializers import FollowSerializer
+from .models import User, Follow
+from .serializers import PostFollowSerializer, CustomDjoserUserSerializer
 from djoser.views import UserViewSet
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import serializers
 
 
 class CustomUserViewSet(UserViewSet):
@@ -15,12 +18,38 @@ class CustomUserViewSet(UserViewSet):
     def subscriptions(self, request, id=None):
         user = self.request.user
         following_people = User.objects.filter(following__user=user)
-        serializer = FollowSerializer(
-            following_people, context={'request': request}, many=True)
-        return Response(serializer.data)
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+        result = paginator.paginate_queryset(queryset=following_people,
+                                             request=request)
+        serializer = CustomDjoserUserSerializer(
+            result, context={'request': request}, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
-        # paginator = PageNumberPagination()
-        # paginator.page_size = 5
-        # result_page = paginator.paginate_queryset(following_people, request)
-        # serializer = FollowSerializer(result_page, context={'request': request}, many=True)
-        # return paginator.get_paginated_response(serializer.data)
+    @action(methods=['post', 'delete'], detail=True,)
+    def subscribe(self, request, id=None):
+        user = self.request.user
+        following = get_object_or_404(User, id=id)
+
+        if request.method == 'POST':
+            serializer = PostFollowSerializer(
+                data={'user': user.id, 'following': following.id},
+                context={'request': request},
+            )
+            serializer.is_valid(raise_exception=True)
+
+            Follow.objects.create(user=user, following=following)
+            serializer = CustomDjoserUserSerializer(
+                following, context={'request': request})
+            return Response(data=serializer.data,
+                            status=HTTPStatus.CREATED)
+
+        if request.method == 'DELETE':
+            follow_entry = (Follow.objects
+                            .filter(user=user, following=following))
+            if not follow_entry.exists():
+                return Response('There was no such subscription.',
+                                status=HTTPStatus.BAD_REQUEST)
+            follow_entry.delete()
+            return Response('Successful unsubscribe.',
+                            status=HTTPStatus.NO_CONTENT)

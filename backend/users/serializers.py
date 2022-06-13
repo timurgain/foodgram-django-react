@@ -5,7 +5,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from .models import Follow, User
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
+class CustomDjoserUserCreateSerializer(UserCreateSerializer):
     """Custom serializer to create user via Djoser."""
     first_name = serializers.CharField(max_length=150, required=True)
     last_name = serializers.CharField(max_length=150, required=True)
@@ -14,7 +14,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         fields = ('email', 'username', 'first_name', 'last_name', 'password')
 
 
-class CustomUserSerializer(UserSerializer):
+class CustomDjoserUserSerializer(UserSerializer):
     """Custom serializer for model User via Djoser."""
 
     class Meta(UserSerializer.Meta):
@@ -24,15 +24,24 @@ class CustomUserSerializer(UserSerializer):
         )
 
 
-class FollowSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """Serializer for model User in case of subscriptions list request."""
 
     class Meta:
-        model = Follow
+        model = User
         fields = (
             'email', 'id', 'username', 'first_name', 'last_name',
             # 'is_subscribed',
         )
+
+
+class PostFollowSerializer(serializers.ModelSerializer):
+    """Serializer for model Follow in case of POST subscription request.
+    Used for input data validation."""
+
+    class Meta:
+        model = Follow
+        fields = ('user', 'following')
 
         validators = (
             UniqueTogetherValidator(
