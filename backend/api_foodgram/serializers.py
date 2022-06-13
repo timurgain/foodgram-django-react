@@ -21,10 +21,19 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Serializer for Recipe model in the foodgram app."""
+    tags = TagSerializer(many=True)
+    ingredients = IngredientSerializer(many=True)
+
     class Meta:
         model = Ingredient
         fields = ('name', 'tags', 'author', 'ingredients',
                   'image', 'text', 'cooking_time',)
+
+    def create(self, validated_data):
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
 
 
 class FavoriteRecipesSerializer(serializers.ModelSerializer):
