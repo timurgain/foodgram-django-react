@@ -4,21 +4,6 @@ from .views import CustomUserViewSet
 
 app_name = 'users'
 
-# router.register(
-#     prefix=r'users/subscriptions',
-#     viewset=SubscriptionViewSet,
-#     basename='subscriptions',
-# )
-# router.register(
-#     prefix=r'users/(?P<user_id>\d+)/subscribe/',
-#     viewset=SubscriptionViewSet,
-#     basename='subscribe',
-# )
-
-# urlpatterns = [
-#     path('', include(router.urls)),
-# ]
-
 router = DefaultRouter()
 router.register(prefix=r'users', viewset=CustomUserViewSet)
 

@@ -5,14 +5,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 
-class UserSerializer(serializers.ModelSerializer):
-    """Serializer for Tag model in the foodgram app."""
-    class Meta:
-        model = User
-        fields = ('email', 'username', 'first_name', 'last_name',
-                  'password', 'role',)
-
-
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for Tag model in the foodgram app."""
     class Meta:

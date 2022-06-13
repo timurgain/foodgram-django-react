@@ -5,14 +5,7 @@ from users.models import User
 
 from api_foodgram.serializers import (FavoriteRecipesSerializer,
                                       IngredientSerializer, RecipeSerializer,
-                                      ShoppingCartSerializer, TagSerializer,
-                                      UserSerializer)
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """."""
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+                                      ShoppingCartSerializer, TagSerializer,)
 
 
 class TagViewSet(viewsets.ModelViewSet):

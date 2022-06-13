@@ -24,17 +24,6 @@ class CustomDjoserUserSerializer(UserSerializer):
         )
 
 
-class UserSerializer(serializers.ModelSerializer):
-    """Serializer for model User in case of subscriptions list request."""
-
-    class Meta:
-        model = User
-        fields = (
-            'email', 'id', 'username', 'first_name', 'last_name',
-            # 'is_subscribed',
-        )
-
-
 class PostFollowSerializer(serializers.ModelSerializer):
     """Serializer for model Follow in case of POST subscription request.
     Used for input data validation."""
