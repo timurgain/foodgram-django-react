@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Subscription, User
+from .models import Follow, User
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -24,24 +24,19 @@ class CustomUserSerializer(UserSerializer):
         )
 
 
-class SubscriptionSerializer(serializers.ModelSerializer):
-    """Serializer for model Subscription."""
-    user = serializers.SlugRelatedField(
-        slug_field='username', read_only=True,
-        default=serializers.CurrentUserDefault(),
-    )
-    following = serializers.SlugRelatedField(
-        slug_field='username',
-        queryset=User.objects.all(),
-    )
+class FollowSerializer(serializers.ModelSerializer):
+    """Serializer for model User in case of subscriptions list request."""
 
     class Meta:
-        model = Subscription
-        fields = ('user', 'following',)
+        model = Follow
+        fields = (
+            'email', 'id', 'username', 'first_name', 'last_name',
+            # 'is_subscribed',
+        )
 
         validators = (
             UniqueTogetherValidator(
-                queryset=Subscription.objects.all(),
+                queryset=Follow.objects.all(),
                 fields=('user', 'following'),
                 message='You are already following that user.',
             ),

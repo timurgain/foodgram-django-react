@@ -33,7 +33,7 @@ class User(AbstractUser):
         return self.username[:30]
 
 
-class Subscription(models.Model):
+class Follow(models.Model):
     """Table with subscriptions."""
     user = models.ForeignKey(
         to=User,
@@ -52,6 +52,12 @@ class Subscription(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'following'),
+                name='unique_following',
+            ),
+        )
 
     def __str__(self) -> str:
         return f'{self.user} подписан на автора {self.author}'
