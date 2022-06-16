@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import IngredientViewSet, TagViewSet, RecipesViewSet
+from .views import IngredientViewSet, TagViewSet, RecipeViewSet
 
 app_name = 'api_foodgram'
 
@@ -11,7 +11,7 @@ router_v1.register(
     prefix='tags', viewset=TagViewSet
 )
 router_v1.register(
-    prefix='recipes', viewset=RecipesViewSet
+    prefix='recipes', viewset=RecipeViewSet
 )
 router_v1.register(
     prefix='ingredients', viewset=IngredientViewSet, basename='ingredient'

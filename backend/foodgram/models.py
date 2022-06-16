@@ -75,6 +75,7 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         to='Tag',
+        through='TagInRecipe',
         related_name='recipes',
         verbose_name='Теги',
     )
@@ -129,15 +130,18 @@ class Recipe(models.Model):
 
 
 class IngredientInRecipe(models.Model):
-    """Ingredient table with its quantity."""
+    """Explicit table implementation
+    of ingredient with its quantity in recipe."""
     recipe = models.ForeignKey(
         to='Recipe',
         on_delete=models.CASCADE,
+        # related_name='ingredients',
         verbose_name='Рецепт',
     )
     ingredient = models.ForeignKey(
         to='Ingredient',
         on_delete=models.CASCADE,
+        # related_name='recipies',
         verbose_name='Инградиент',
     )
     amount = models.PositiveSmallIntegerField(
@@ -145,6 +149,33 @@ class IngredientInRecipe(models.Model):
         null=True,
         blank=True,
     )
+
+    class Meta:
+        verbose_name = 'Ингредиент в рецепте'
+        verbose_name_plural = 'Ингредиенты в рецептах'
+
+
+class TagInRecipe(models.Model):
+    """Explicit table implementation
+    of tags in recipes."""
+
+    tags = models.ForeignKey(
+        to='Tag',
+        blank=True,
+        on_delete=models.CASCADE,
+        # related_name='recipes',
+        verbose_name='Теги',
+    )
+    recipies = models.ForeignKey(
+        to='Recipe',
+        on_delete=models.CASCADE,
+        # related_name='tags',
+        verbose_name='Теги',
+    )
+
+    class Meta:
+        verbose_name = 'Тег в рецепте'
+        verbose_name_plural = 'Теги в рецептах'
 
 
 class BaseFavoriteCart(models.Model):  # <<< ! >>>
