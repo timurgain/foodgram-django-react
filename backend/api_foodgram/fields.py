@@ -2,6 +2,7 @@ import base64
 import uuid
 
 from django.core.files.images import ImageFile
+from django.core.files.base import ContentFile
 from rest_framework import serializers
 
 
@@ -18,4 +19,5 @@ class Base64ToImageField(serializers.ImageField):
             raise serializers.ValidationError('wrong_image')
         image_file = base64.b64decode(base64_str_image)
 
-        return ImageFile(file=image_file, name=image_name_extension)
+        data = ContentFile(content=image_file, name=image_name_extension)
+        return super(Base64ToImageField, self).to_internal_value(data)

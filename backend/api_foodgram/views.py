@@ -26,7 +26,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        # data = {
+        #     'author': self.request.user,
+        #     'ingredients': self.request.data['ingredients'],
+        #     'tags': self.request.data['tags']
+        # }
+        serializer.save(
+            author=self.request.user,
+            ingredients=self.request.data['ingredients'],
+            tags=self.request.data['tags']
+        )
 
 
 class FavoriteRecipesViewSet(viewsets.ModelViewSet):
