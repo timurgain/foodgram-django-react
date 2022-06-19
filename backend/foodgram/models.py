@@ -44,6 +44,29 @@ class Tag(models.Model):
         return self.name[:30]
 
 
+class TagInRecipe(models.Model):
+    """Explicit table implementation
+    of tags in recipes."""
+
+    tag = models.ForeignKey(
+        to='Tag',
+        blank=True,
+        on_delete=models.CASCADE,
+        # related_name='recipe',
+        verbose_name='Тег',
+    )
+    recipe = models.ForeignKey(
+        to='Recipe',
+        on_delete=models.CASCADE,
+        # related_name='tag',
+        verbose_name='Рецепт',
+    )
+
+    class Meta:
+        verbose_name = 'Тег в рецепте'
+        verbose_name_plural = 'Теги в рецептах'
+
+
 class Ingredient(models.Model):
     """."""
     name = models.CharField(
@@ -64,6 +87,32 @@ class Ingredient(models.Model):
 
     def __str__(self) -> str:
         return self.name[:30]
+
+
+class IngredientInRecipe(models.Model):
+    """Explicit table implementation
+    of ingredient with its quantity in recipe."""
+    recipe = models.ForeignKey(
+        to='Recipe',
+        on_delete=models.CASCADE,
+        # related_name='ingredients',
+        verbose_name='Рецепт',
+    )
+    ingredient = models.ForeignKey(
+        to='Ingredient',
+        on_delete=models.CASCADE,
+        # related_name='ingredient_in_recipe',
+        verbose_name='Инградиент',
+    )
+    amount = models.PositiveSmallIntegerField(
+        verbose_name='Количество',
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = 'Ингредиент в рецепте'
+        verbose_name_plural = 'Ингредиенты в рецептах'
 
 
 class Recipe(models.Model):
@@ -127,55 +176,6 @@ class Recipe(models.Model):
 
     def __str__(self) -> str:
         return self.name[:30]
-
-
-class IngredientInRecipe(models.Model):
-    """Explicit table implementation
-    of ingredient with its quantity in recipe."""
-    recipe = models.ForeignKey(
-        to='Recipe',
-        on_delete=models.CASCADE,
-        # related_name='ingredients',
-        verbose_name='Рецепт',
-    )
-    ingredient = models.ForeignKey(
-        to='Ingredient',
-        on_delete=models.CASCADE,
-        # related_name='recipies',
-        verbose_name='Инградиент',
-    )
-    amount = models.PositiveSmallIntegerField(
-        verbose_name='Количество',
-        null=True,
-        blank=True,
-    )
-
-    class Meta:
-        verbose_name = 'Ингредиент в рецепте'
-        verbose_name_plural = 'Ингредиенты в рецептах'
-
-
-class TagInRecipe(models.Model):
-    """Explicit table implementation
-    of tags in recipes."""
-
-    tag = models.ForeignKey(
-        to='Tag',
-        blank=True,
-        on_delete=models.CASCADE,
-        # related_name='recipe',
-        verbose_name='Тег',
-    )
-    recipe = models.ForeignKey(
-        to='Recipe',
-        on_delete=models.CASCADE,
-        # related_name='tag',
-        verbose_name='Рецепт',
-    )
-
-    class Meta:
-        verbose_name = 'Тег в рецепте'
-        verbose_name_plural = 'Теги в рецептах'
 
 
 class BaseFavoriteCart(models.Model):  # <<< ! >>>
