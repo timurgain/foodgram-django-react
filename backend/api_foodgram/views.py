@@ -3,9 +3,10 @@ from foodgram.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingCart,
 from rest_framework import viewsets
 from users.models import User
 
-from api_foodgram.serializers import (FavoriteRecipesSerializer,
-                                      IngredientSerializer, RecipeSerializer,
-                                      ShoppingCartSerializer, TagSerializer,)
+from api_foodgram.serializers import (ActionRecipeSerializer,
+                                      FavoriteRecipesSerializer,
+                                      IngredientSerializer,
+                                      ShoppingCartSerializer, TagSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -23,14 +24,11 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     """."""
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+
+    def get_serializer_class(self):
+        return ActionRecipeSerializer
 
     def perform_create(self, serializer):
-        # data = {
-        #     'author': self.request.user,
-        #     'ingredients': self.request.data['ingredients'],
-        #     'tags': self.request.data['tags']
-        # }
         serializer.save(
             author=self.request.user,
             ingredients=self.request.data['ingredients'],

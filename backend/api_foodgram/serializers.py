@@ -15,13 +15,13 @@ class TagSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'name', 'color', 'slug',)
 
 
-class TagInRecipeSerializer(serializers.ModelSerializer):
-    """Serializer for explicit TagInRecipe model in the foodgram app."""
-    id = serializers.IntegerField(source='tag.id')
+# class TagInRecipeSerializer(serializers.ModelSerializer):
+#     """Serializer for explicit TagInRecipe model in the foodgram app."""
+#     id = serializers.IntegerField(source='tag.id')
 
-    class Meta:
-        model = TagInRecipe
-        fields = ('id', 'tag', 'recipe',)
+#     class Meta:
+#         model = TagInRecipe
+#         fields = ('id', 'tag', 'recipe',)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -32,56 +32,62 @@ class IngredientSerializer(serializers.ModelSerializer):
         read_only_fields = ('name', 'measurement_unit')
 
 
-class IngredientInRecipeSerializer(serializers.ModelSerializer):
-    """Serializer for explicit IngredientInRecipe model in the foodgram app."""
-    id = serializers.IntegerField(
-        source='ingredient.id')
-    name = serializers.CharField(
-        read_only=True, source='ingredient.name')
-    measurement_unit = serializers.CharField(
-        read_only=True, source='ingredient.measurement_unit')
-    amount = serializers.IntegerField(source='ingredientinrecipe.amount')
+class ReadIngredientInRecipeSerializer(serializers.ModelSerializer):
+    """Serializer shows an amount of ingredient in a recipe."""
+    id = serializers.ReadOnlyField(
+        source='ingredient.id'
+    )
+    name = serializers.ReadOnlyField(
+        source='ingredient.name'
+    )
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit'
+    )
 
     class Meta:
         model = IngredientInRecipe
         fields = ('id', 'name', 'amount', 'measurement_unit')
 
 
-class RecipeSerializer(serializers.ModelSerializer):
-    """Serializer for Recipe model in the foodgram app."""
-    tags = TagInRecipeSerializer(many=True, read_only=True)
-    ingredients = IngredientInRecipeSerializer(many=True, read_only=True)
-    author = CustomDjoserUserSerializer(read_only=True)
-    image = Base64ToImageField(max_length=None, use_url=True)
+class ActionIngredientInRecipeSerializer(serializers.ModelSerializer):
+    """Serializer for adding ingredients while creating a recipe."""
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all()
+    )
+    amount = serializers.IntegerField()
+
+    class Meta:
+        model = IngredientInRecipe
+        fields = ('id', 'amount')
+
+
+class ReadRecipeSerializer(serializers.ModelSerializer):
+    """Serializer for get method on recipes in Recipe model."""
+    tags = TagSerializer(read_only=True)
+    ingredients = ReadIngredientInRecipeSerializer(read_only=True)
 
     class Meta:
         model = Recipe
         fields = ('name', 'tags', 'author', 'ingredients',
                   'image', 'text', 'cooking_time',)
 
-    def create(self, validated_data):
-        # ingredients+recipes and tags+recipes are stored in separate tables
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
 
-        recipe = Recipe.objects.create(**validated_data)
-        for ingredient in ingredients:
-            kwargs = {
-                'recipe': recipe,
-                'ingredient': Ingredient.objects.get(id=ingredient['id']),
-                'amount': ingredient['amount'],
-            }
-            IngredientInRecipe.objects.create(**kwargs)
-        for tag_id in tags:
-            kwargs = {
-                'recipe': recipe,
-                'tag': Tag.objects.get(id=tag_id),
-            }
-            TagInRecipe.objects.create(**kwargs)
-        return recipe
+class ActionRecipeSerializer(serializers.ModelSerializer):
+    """Serializer for post, patch, del methods on recipes in Recipe model."""
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(), many=True
+    )
+    ingredients = ActionIngredientInRecipeSerializer(many=True)
+    author = CustomDjoserUserSerializer(read_only=True)
+    image = Base64ToImageField()
 
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'tags', 'author', 'ingredients',
+                  'image', 'text', 'cooking_time',)
+
+    def to_representation(self, instance):
+        return super().to_representation(instance)
 
     def to_internal_value(self, data):
         """
@@ -93,7 +99,7 @@ class RecipeSerializer(serializers.ModelSerializer):
          вызова метода perform_create во ViewSet.
         Валидация через методы validate_tags и validate_ingredients
          не получилась :(
-        Еще вариант валидировать эти поля в методе create,
+        Еще вариант валидировать эти поля в самом методе create,
          но там кажется неуместно.
         """
         ingredients = []
@@ -121,6 +127,29 @@ class RecipeSerializer(serializers.ModelSerializer):
                     'tags': 'Используйте id существующих тегов.'
                 })
         return super().to_internal_value(data)
+
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+
+        recipe = Recipe.objects.create(**validated_data)
+        for ingredient in ingredients:
+            kwargs = {
+                'recipe': recipe,
+                'ingredient': Ingredient.objects.get(id=ingredient['id']),
+                'amount': ingredient['amount'],
+            }
+            IngredientInRecipe.objects.create(**kwargs)
+        for tag_id in tags:
+            kwargs = {
+                'recipe': recipe,
+                'tag': Tag.objects.get(id=tag_id),
+            }
+            TagInRecipe.objects.create(**kwargs)
+        return recipe
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
 
 
 class FavoriteRecipesSerializer(serializers.ModelSerializer):
