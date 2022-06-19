@@ -128,10 +128,36 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
 
     def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
-
+        tags, ingredients = self.pop_tags_ingredients(validated_data)
         recipe = Recipe.objects.create(**validated_data)
+        self.tag_in_recipe_create(tags, recipe)
+        self.ingredient_in_recipe_create(ingredients, recipe)
+        return recipe
+
+    def update(self, instance, validated_data):
+        tags, ingredients = self.pop_tags_ingredients(validated_data)
+        IngredientInRecipe.objects.filter(recipe=instance).delete()
+        TagInRecipe.objects.filter(recipe=instance).delete()
+        self.tag_in_recipe_create(tags, recipe=instance)
+        self.ingredient_in_recipe_create(ingredients, recipe=instance)
+        return super().update(instance, validated_data)
+
+    @staticmethod
+    def pop_tags_ingredients(validated_data: dict):
+        return validated_data.pop('tags'), validated_data.pop('ingredients')
+
+    @staticmethod
+    def tag_in_recipe_create(tags: list, recipe: Recipe):
+        for tag_id in tags:
+            kwargs = {
+                'recipe': recipe,
+                'tag': Tag.objects.get(id=tag_id),
+                # 'tag': Tag.objects.get(id=tag_id.id),
+            }
+            TagInRecipe.objects.create(**kwargs)
+
+    @staticmethod
+    def ingredient_in_recipe_create(ingredients: list, recipe: Recipe):
         for ingredient in ingredients:
             kwargs = {
                 'recipe': recipe,
@@ -139,16 +165,6 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
                 'amount': ingredient['amount'],
             }
             IngredientInRecipe.objects.create(**kwargs)
-        for tag_id in tags:
-            kwargs = {
-                'recipe': recipe,
-                'tag': Tag.objects.get(id=tag_id),
-            }
-            TagInRecipe.objects.create(**kwargs)
-        return recipe
-
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
 
 
 class FavoriteRecipesSerializer(serializers.ModelSerializer):

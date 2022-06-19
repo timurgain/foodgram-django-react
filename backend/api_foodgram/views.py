@@ -38,6 +38,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             tags=self.request.data['tags']
         )
 
+    def perform_update(self, serializer):
+        serializer.save(
+            ingredients=self.request.data['ingredients'],
+            tags=self.request.data['tags']
+        )
+
 
 class FavoriteRecipesViewSet(viewsets.ModelViewSet):
     """."""
