@@ -1,11 +1,10 @@
-from users.models import User
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
 
 
 class Tag(models.Model):
-    """."""
+    """Tag table."""
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
@@ -47,7 +46,6 @@ class Tag(models.Model):
 class TagInRecipe(models.Model):
     """Explicit table implementation
     of tags in recipes."""
-
     tag = models.ForeignKey(
         to='Tag',
         blank=True,
@@ -68,7 +66,7 @@ class TagInRecipe(models.Model):
 
 
 class Ingredient(models.Model):
-    """."""
+    """Ingredient table."""
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
@@ -84,9 +82,15 @@ class Ingredient(models.Model):
         ordering = ['name']
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_ingredient'
+            ),
+        )
 
     def __str__(self) -> str:
-        return self.name[:30]
+        return self.name[:30] + ' - ' + self.measurement_unit
 
 
 class IngredientInRecipe(models.Model):
@@ -95,19 +99,21 @@ class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
         to='Recipe',
         on_delete=models.CASCADE,
-        # related_name='ingredients',
+        # related_name='ingredients_in_recipe',
         verbose_name='Рецепт',
     )
     ingredient = models.ForeignKey(
         to='Ingredient',
         on_delete=models.CASCADE,
-        # related_name='ingredient_in_recipe',
+        # related_name='ingredients_in_recipe',
         verbose_name='Инградиент',
     )
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
-        null=True,
-        blank=True,
+        validators=(
+            MinValueValidator(1, message='1 - минимальное количество'),
+            MaxValueValidator(999, message='999 - максимальное количество'),
+        ),
     )
 
     class Meta:
@@ -116,7 +122,7 @@ class IngredientInRecipe(models.Model):
 
 
 class Recipe(models.Model):
-    """."""
+    """Recipe table."""
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
@@ -179,7 +185,7 @@ class Recipe(models.Model):
 
 
 class BaseFavoriteCart(models.Model):  # <<< ! >>>
-    """."""
+    """Base class for Favorite table and Cart table."""
     owner = models.ForeignKey(
         to='users.User',
         on_delete=models.CASCADE,
@@ -205,7 +211,7 @@ class BaseFavoriteCart(models.Model):  # <<< ! >>>
 
 
 class FavoriteRecipes(BaseFavoriteCart):
-
+    """Favorite recipes table."""
     class Meta:
         verbose_name = 'Список избранного'
         verbose_name_plural = 'Списки избранного'
@@ -215,7 +221,7 @@ class FavoriteRecipes(BaseFavoriteCart):
 
 
 class ShoppingCart(BaseFavoriteCart):
-
+    """Shopping cart table."""
     class Meta:
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
