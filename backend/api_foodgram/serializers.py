@@ -21,7 +21,7 @@ class TagInRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TagInRecipe
-        fields = ('id', 'tags', 'recipies',)
+        fields = ('id', 'tag', 'recipe',)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -40,25 +40,11 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
         read_only=True, source='ingredient.name')
     measurement_unit = serializers.CharField(
         read_only=True, source='ingredient.measurement_unit')
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(source='ingredientinrecipe.amount')
 
     class Meta:
         model = IngredientInRecipe
         fields = ('id', 'name', 'amount', 'measurement_unit')
-
-    def validate_ingredients(self, value):
-        ingredients = []
-        for ingredient in value:
-            if int(ingredient['amount']) < 0:
-                raise serializers.ValidationError(
-                    'Ожидается количество больше 0.'
-                )
-            if ingredient['id'] in ingredients:
-                raise serializers.ValidationError(
-                    'Ингредиенты не могут повторяться.'
-                )
-            ingredients.append(ingredient['id'])
-            return value
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -74,7 +60,25 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'image', 'text', 'cooking_time',)
 
     def create(self, validated_data):
-        return super().create(**validated_data)
+        # ingredients+recipes and tags+recipes are stored in separate tables
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+
+        recipe = Recipe.objects.create(**validated_data)
+        for ingredient in ingredients:
+            kwargs = {
+                'recipe': recipe,
+                'ingredient': Ingredient.objects.get(id=ingredient['id']),
+                'amount': ingredient['amount'],
+            }
+            IngredientInRecipe.objects.create(**kwargs)
+        for tag_id in tags:
+            kwargs = {
+                'recipe': recipe,
+                'tag': Tag.objects.get(id=tag_id),
+            }
+            TagInRecipe.objects.create(**kwargs)
+        return recipe
 
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
@@ -114,7 +118,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             tag_exists = Tag.objects.filter(id=tag_id).exists()
             if not tag_exists:
                 raise serializers.ValidationError({
-                    'tags': 'Используйте коды существующих тегов.'
+                    'tags': 'Используйте id существующих тегов.'
                 })
         return super().to_internal_value(data)
 

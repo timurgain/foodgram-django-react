@@ -159,18 +159,18 @@ class TagInRecipe(models.Model):
     """Explicit table implementation
     of tags in recipes."""
 
-    tags = models.ForeignKey(
+    tag = models.ForeignKey(
         to='Tag',
         blank=True,
         on_delete=models.CASCADE,
-        # related_name='recipes',
-        verbose_name='Теги',
+        # related_name='recipe',
+        verbose_name='Тег',
     )
-    recipies = models.ForeignKey(
+    recipe = models.ForeignKey(
         to='Recipe',
         on_delete=models.CASCADE,
-        # related_name='tags',
-        verbose_name='Теги',
+        # related_name='tag',
+        verbose_name='Рецепт',
     )
 
     class Meta:
