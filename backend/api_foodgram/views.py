@@ -6,6 +6,7 @@ from users.models import User
 from api_foodgram.serializers import (ActionRecipeSerializer,
                                       FavoriteRecipesSerializer,
                                       IngredientSerializer,
+                                      ReadRecipeSerializer,
                                       ShoppingCartSerializer, TagSerializer)
 
 
@@ -26,7 +27,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
 
     def get_serializer_class(self):
-        return ActionRecipeSerializer
+        if self.request.method in ('POST', 'PATCH', 'DEL'):
+            return ActionRecipeSerializer
+        return ReadRecipeSerializer
 
     def perform_create(self, serializer):
         serializer.save(

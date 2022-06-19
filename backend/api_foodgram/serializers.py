@@ -15,15 +15,6 @@ class TagSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'name', 'color', 'slug',)
 
 
-# class TagInRecipeSerializer(serializers.ModelSerializer):
-#     """Serializer for explicit TagInRecipe model in the foodgram app."""
-#     id = serializers.IntegerField(source='tag.id')
-
-#     class Meta:
-#         model = TagInRecipe
-#         fields = ('id', 'tag', 'recipe',)
-
-
 class IngredientSerializer(serializers.ModelSerializer):
     """Serializer for Ingredient model in the foodgram app."""
     class Meta:
@@ -33,7 +24,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class ReadIngredientInRecipeSerializer(serializers.ModelSerializer):
-    """Serializer shows an amount of ingredient in a recipe."""
+    """Serializer shows an ingredient with amount in a recipe."""
     id = serializers.ReadOnlyField(
         source='ingredient.id'
     )
@@ -63,13 +54,19 @@ class ActionIngredientInRecipeSerializer(serializers.ModelSerializer):
 
 class ReadRecipeSerializer(serializers.ModelSerializer):
     """Serializer for get method on recipes in Recipe model."""
-    tags = TagSerializer(read_only=True)
-    ingredients = ReadIngredientInRecipeSerializer(read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    ingredients = serializers.SerializerMethodField()
+    author = CustomDjoserUserSerializer()
 
     class Meta:
         model = Recipe
         fields = ('name', 'tags', 'author', 'ingredients',
                   'image', 'text', 'cooking_time',)
+
+    def get_ingredients(self, obj):
+        queryset = IngredientInRecipe.objects.filter(recipe=obj)
+        serializer = ReadIngredientInRecipeSerializer(queryset, many=True)
+        return serializer.data
 
 
 class ActionRecipeSerializer(serializers.ModelSerializer):
@@ -87,7 +84,9 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
                   'image', 'text', 'cooking_time',)
 
     def to_representation(self, instance):
-        return super().to_representation(instance)
+        # https://www.django-rest-framework.org/api-guide/serializers/#including-extra-context
+        serializer = ReadRecipeSerializer(instance, context=self.context)
+        return serializer.data
 
     def to_internal_value(self, data):
         """
