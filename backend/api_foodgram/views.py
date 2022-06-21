@@ -1,10 +1,14 @@
-from foodgram.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingCart,
+from rest_framework.generics import get_object_or_404
+
+from foodgram.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                              Tag)
 from rest_framework import viewsets
+from rest_framework import permissions
+from rest_framework.decorators import action
 from users.models import User
 
 from api_foodgram.serializers import (ActionRecipeSerializer,
-                                      FavoriteRecipesSerializer,
+                                      FavoriteRecipeSerializer,
                                       IngredientSerializer,
                                       ReadRecipeSerializer,
                                       ShoppingCartSerializer, TagSerializer)
@@ -44,11 +48,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
             tags=self.request.data['tags']
         )
 
+        @action(methods=['post', 'del'], detail=True,
+                permission_classes=[permissions.IsAuthenticated])
+        def favorite(self, request, id=None):
+            user = self.request.user
+            recipe = get_object_or_404(Recipe, id=id)
+            favorite = ...
 
-class FavoriteRecipesViewSet(viewsets.ModelViewSet):
+
+class FavoriteRecipeViewSet(viewsets.ModelViewSet):
     """."""
-    queryset = FavoriteRecipes.objects.all()
-    serializer_class = FavoriteRecipesSerializer
+    queryset = FavoriteRecipe.objects.all()
+    serializer_class = FavoriteRecipeSerializer
 
 
 class ShoppingCartViewSet(viewsets.ModelViewSet):

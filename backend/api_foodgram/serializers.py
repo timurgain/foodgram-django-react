@@ -1,4 +1,4 @@
-from foodgram.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingCart,
+from foodgram.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                              Tag, TagInRecipe, IngredientInRecipe)
 from users.models import User
 from users.serializers import CustomDjoserUserSerializer
@@ -167,8 +167,8 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
             IngredientInRecipe.objects.create(**kwargs)
 
 
-class FavoriteRecipesSerializer(serializers.ModelSerializer):
-    """Serializer for FavoriteRecipes model in the foodgram app."""
+class FavoriteRecipeSerializer(serializers.ModelSerializer):
+    """Serializer for FavoriteRecipe model in the foodgram app."""
     class Meta:
         model = Ingredient
         fields = ('owner', 'recipies')

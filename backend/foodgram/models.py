@@ -184,17 +184,19 @@ class Recipe(models.Model):
         return self.name[:30]
 
 
-class BaseFavoriteCart(models.Model):  # <<< ! >>>
-    """Base class for Favorite table and Cart table."""
-    owner = models.ForeignKey(
+class FavoriteRecipe(models.Model):
+    """Favorite recipes table."""
+    user = models.ForeignKey(
         to='users.User',
         on_delete=models.CASCADE,
-        # related_name='owner',
-        verbose_name='Владелец'
+        related_name='favorites',
+        verbose_name='Пользователь',
     )
-    recipies = models.ManyToManyField(
+    recipe = models.ForeignKey(
         to='Recipe',
-        related_name='+',
+        on_delete=models.CASCADE,
+        related_name='lovers',
+        verbose_name='Рецепт',
     )
     created_at = models.DateTimeField(
         verbose_name='Дата создания',
@@ -207,24 +209,52 @@ class BaseFavoriteCart(models.Model):  # <<< ! >>>
 
     class Meta:
         ordering = ['-updated_at']
-        abstract = True
-
-
-class FavoriteRecipes(BaseFavoriteCart):
-    """Favorite recipes table."""
-    class Meta:
         verbose_name = 'Список избранного'
         verbose_name_plural = 'Списки избранного'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_user_cant_add_in_favorite_recipe_twice'
+            ),
+        )
 
     def __str__(self) -> str:
-        return f"Список избранных рецептов от пользователя {self.owner}"
+        return f"Список избранных рецептов у пользователя {self.owner}"
 
 
-class ShoppingCart(BaseFavoriteCart):
+class ShoppingCart(models.Model):
     """Shopping cart table."""
+    user = models.ForeignKey(
+        to='users.User',
+        on_delete=models.CASCADE,
+        related_name='carts',
+        verbose_name='Покупатель',
+    )
+    recipe = models.ForeignKey(
+        to='Recipe',
+        on_delete=models.CASCADE,
+        related_name='carts',
+        verbose_name='Рецепт',
+    )
+    created_at = models.DateTimeField(
+        verbose_name='Дата создания',
+        auto_now_add=True,
+    )
+    updated_at = models.DateTimeField(
+        verbose_name='Дата обновления',
+        auto_now=True,
+    )
+
     class Meta:
+        ordering = ['-updated_at']
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_user_cant_add_in_cart_recipe_twice'
+            ),
+        )
 
     def __str__(self) -> str:
         return f"Список покупок пользователя {self.owner}"
