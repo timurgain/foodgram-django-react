@@ -4,14 +4,11 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from users.models import User
 
 from api_foodgram.serializers import (ActionRecipeSerializer,
-                                      FavoriteRecipeSerializer,
                                       IngredientSerializer,
                                       LiteRecipeSerializer,
-                                      ReadRecipeSerializer,
-                                      ShoppingCartSerializer, TagSerializer)
+                                      ReadRecipeSerializer, TagSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -60,9 +57,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         elif request.method == 'POST':
-            new_favorite = FavoriteRecipe.objects.create(
-                user=user, recipe=recipe)
-            new_favorite.save()
+            FavoriteRecipe.objects.create(user=user, recipe=recipe)
             serializer = LiteRecipeSerializer(
                 instance=recipe, context={'request': request})
             return Response(
@@ -79,15 +74,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 "Ошибка, рецепт не был в избранном.",
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-
-class FavoriteRecipeViewSet(viewsets.ModelViewSet):
-    """."""
-    queryset = FavoriteRecipe.objects.all()
-    serializer_class = FavoriteRecipeSerializer
-
-
-class ShoppingCartViewSet(viewsets.ModelViewSet):
-    """."""
-    queryset = ShoppingCart.objects.all()
-    serializer_class = ShoppingCartSerializer

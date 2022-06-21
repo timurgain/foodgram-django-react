@@ -60,7 +60,7 @@ class LiteRecipeSerializer(serializers.ModelSerializer):
 
 
 class ReadRecipeSerializer(serializers.ModelSerializer):
-    """Serializer for get method on recipes in Recipe model."""
+    """Serializer for get method on recipes."""
     tags = TagSerializer(many=True, read_only=True)
     ingredients = serializers.SerializerMethodField()
     author = CustomDjoserUserSerializer()
@@ -77,7 +77,7 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
 
 
 class ActionRecipeSerializer(serializers.ModelSerializer):
-    """Serializer for post, patch, del methods on recipes in Recipe model."""
+    """Serializer for post, patch, delete methods on recipes."""
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
@@ -127,8 +127,7 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
             ingredients.append(ingredient['id'])
 
         for tag_id in data['tags']:
-            tag_exists = Tag.objects.filter(id=tag_id).exists()
-            if not tag_exists:
+            if not Tag.objects.filter(id=tag_id).exists():
                 raise serializers.ValidationError({
                     'tags': 'Используйте id существующих тегов.'
                 })
@@ -171,17 +170,3 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
                 'amount': ingredient['amount'],
             }
             IngredientInRecipe.objects.create(**kwargs)
-
-
-class FavoriteRecipeSerializer(serializers.ModelSerializer):
-    """Serializer for FavoriteRecipe model in the foodgram app."""
-    class Meta:
-        model = Ingredient
-        fields = ('owner', 'recipies')
-
-
-class ShoppingCartSerializer(serializers.ModelSerializer):
-    """Serializer for ShoppingCart model in the foodgram app."""
-    class Meta:
-        model = Ingredient
-        fields = ('owner', 'recipies')

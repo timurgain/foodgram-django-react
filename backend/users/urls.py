@@ -8,7 +8,6 @@ router = DefaultRouter()
 router.register(prefix=r'users', viewset=CustomUserViewSet)
 
 urlpatterns = [
-    # path('', include('djoser.urls')),
     path('', include(router.urls)),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
 ]
