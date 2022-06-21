@@ -1,10 +1,9 @@
-from http import HTTPStatus
-
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework import status
 
 from .models import Follow, User
 from .serializers import CustomDjoserUserSerializer, PostFollowSerializer
@@ -41,14 +40,14 @@ class CustomUserViewSet(UserViewSet):
             serializer = CustomDjoserUserSerializer(
                 following, context={'request': request})
             return Response(data=serializer.data,
-                            status=HTTPStatus.CREATED)
+                            status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
             follow_entry = (Follow.objects
                             .filter(user=user, following=following))
             if not follow_entry.exists():
                 return Response('There was no such subscription.',
-                                status=HTTPStatus.BAD_REQUEST)
+                                status=status.HTTP_400_BAD_REQUEST)
             follow_entry.delete()
             return Response('Successful unsubscribe.',
-                            status=HTTPStatus.NO_CONTENT)
+                            status=status.HTTP_204_NO_CONTENT)

@@ -52,6 +52,13 @@ class ActionIngredientInRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'amount')
 
 
+class LiteRecipeSerializer(serializers.ModelSerializer):
+    """Serializer for response when adding a recipe to favorites."""
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
+
+
 class ReadRecipeSerializer(serializers.ModelSerializer):
     """Serializer for get method on recipes in Recipe model."""
     tags = TagSerializer(many=True, read_only=True)
@@ -143,7 +150,7 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     @staticmethod
-    def pop_tags_ingredients(validated_data: dict):
+    def pop_tags_ingredients(validated_data: dict) -> tuple:
         return validated_data.pop('tags'), validated_data.pop('ingredients')
 
     @staticmethod
@@ -152,7 +159,6 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
             kwargs = {
                 'recipe': recipe,
                 'tag': Tag.objects.get(id=tag_id),
-                # 'tag': Tag.objects.get(id=tag_id.id),
             }
             TagInRecipe.objects.create(**kwargs)
 
