@@ -45,32 +45,55 @@ class RecipeViewSet(viewsets.ModelViewSet):
             tags=self.request.data['tags']
         )
 
-    @action(methods=['post', 'delete'], detail=True,
+    @action(methods=['post'], detail=True,
             permission_classes=[permissions.IsAuthenticated])
     def favorite(self, request, pk=None):
-        user = self.request.user
-        recipe = get_object_or_404(Recipe, id=pk)  # не понятно, работает с pk
-        favorite = FavoriteRecipe.objects.filter(user=user, recipe=recipe)
-        if request.method == 'POST' and favorite.exists():
+        return self.post_recipe_in_selected_model(
+            request=request, model=FavoriteRecipe, pk=pk)
+
+    @favorite.mapping.delete
+    def delete_favorite(self, request, pk=None):
+        return self.delete_recipe_from_selected_model(
+            request=request, model=FavoriteRecipe, pk=pk
+        )
+
+    @action(methods=['post', 'delete'], detail=True,
+            permission_classes=[permissions.IsAuthenticated])
+    def shopping_cart(self, request):
+        pass
+
+    @action(methods=['post'], detail=False,
+            permission_classes=[permissions.IsAuthenticated])
+    def download_shopping_cart(self, request):
+        pass
+
+    @staticmethod
+    def post_recipe_in_selected_model(request, model, pk=None):
+        user = request.user
+        recipe = get_object_or_404(Recipe, id=pk)
+        recipe_in_selected_model = model.objects.filter(
+            user=user, recipe=recipe)
+
+        if recipe_in_selected_model.exists():
             return Response(
                 "Ошибка, этот рецепт уже есть в списке избранного.",
                 status=status.HTTP_400_BAD_REQUEST
             )
-        elif request.method == 'POST':
-            FavoriteRecipe.objects.create(user=user, recipe=recipe)
+        else:
+            model.objects.create(user=user, recipe=recipe)
             serializer = LiteRecipeSerializer(
                 instance=recipe, context={'request': request})
             return Response(
                 serializer.data
             )
-        elif request.method == 'DELETE' and favorite.exists():
-            favorite.delete()
-            return Response(
-                "Ок, рецепт удален из избранного.",
-                status=status.HTTP_204_NO_CONTENT
-            )
-        elif request.method == 'DELETE':
-            return Response(
-                "Ошибка, рецепт не был в избранном.",
-                status=status.HTTP_400_BAD_REQUEST
-            )
+
+    @staticmethod
+    def delete_recipe_from_selected_model(request, model, pk=None):
+        user = request.user
+        recipe = get_object_or_404(Recipe, id=pk)
+        recipe_in_selected_model = get_object_or_404(model, user=user, recipe=recipe)
+        recipe_in_selected_model.delete()
+        return Response(
+            "Ок, рецепт удален из избранного.",
+            status=status.HTTP_204_NO_CONTENT
+        )
