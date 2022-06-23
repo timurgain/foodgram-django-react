@@ -91,7 +91,6 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
                   'image', 'text', 'cooking_time',)
 
     def to_representation(self, instance):
-        # https://www.django-rest-framework.org/api-guide/serializers/#including-extra-context
         serializer = ReadRecipeSerializer(instance, context=self.context)
         return serializer.data
 

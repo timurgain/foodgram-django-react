@@ -18,17 +18,17 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    """."""
+    """ViewSet for Ingredient model in the foodgram app."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    """."""
+    """ViewSet for Recipe model in the foodgram app."""
     queryset = Recipe.objects.all()
 
     def get_serializer_class(self):
-        if self.request.method in ('POST', 'PATCH', 'DEL'):
+        if self.request.method in ('POST', 'PATCH',):
             return ActionRecipeSerializer
         return ReadRecipeSerializer
 
@@ -52,20 +52,37 @@ class RecipeViewSet(viewsets.ModelViewSet):
             request=request, model=FavoriteRecipe, pk=pk)
 
     @favorite.mapping.delete
-    def delete_favorite(self, request, pk=None):
+    def favorite_delete(self, request, pk=None):
         return self.delete_recipe_from_selected_model(
             request=request, model=FavoriteRecipe, pk=pk
         )
 
-    @action(methods=['post', 'delete'], detail=True,
+    @action(methods=['post'], detail=True,
             permission_classes=[permissions.IsAuthenticated])
-    def shopping_cart(self, request):
-        pass
+    def shopping_cart(self, request, pk=None):
+        return self.post_recipe_in_selected_model(
+            request=request, model=ShoppingCart, pk=pk
+        )
 
-    @action(methods=['post'], detail=False,
+    @shopping_cart.mapping.delete
+    def shopping_cart_delete(self, request, pk=None):
+        return self.delete_recipe_from_selected_model(
+            request=request, model=ShoppingCart, pk=pk
+        )
+
+    @action(methods=['get'], detail=False,
             permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
-        pass
+        user = request.user
+        # recipes = ShoppingCart.objects.filter()
+
+        # recipies = []
+        # for recipe_id in user.carts:
+        #     recipe = Recipe.objects.get(id=recipe_id)
+        #     for ingeredient in recipe.ingredients:
+
+        # user_carts_ingredients = []
+
 
     @staticmethod
     def post_recipe_in_selected_model(request, model, pk=None):
@@ -76,7 +93,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         if recipe_in_selected_model.exists():
             return Response(
-                "Ошибка, этот рецепт уже есть в списке избранного.",
+                "Ошибка, этот рецепт уже есть в списке.",
                 status=status.HTTP_400_BAD_REQUEST
             )
         else:
@@ -91,9 +108,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def delete_recipe_from_selected_model(request, model, pk=None):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
-        recipe_in_selected_model = get_object_or_404(model, user=user, recipe=recipe)
+        recipe_in_selected_model = get_object_or_404(
+            model, user=user, recipe=recipe)
         recipe_in_selected_model.delete()
         return Response(
-            "Ок, рецепт удален из избранного.",
+            "Ок, рецепт удален из списка.",
             status=status.HTTP_204_NO_CONTENT
         )
