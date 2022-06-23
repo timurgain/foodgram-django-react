@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from foodgram.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                              Tag, IngredientInRecipe)
 from rest_framework import permissions, status, viewsets
@@ -89,13 +90,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                               obj.ingredient.measurement_unit]
                     })
 
-        shopping_list = ''
+        shopping_file = ''
         for key, value in ingredients.items():
-            shopping_list += f"{key} - {value[0]} {value[1]}\n"
-        return Response(
-            data=shopping_list,
-            headers={'Content-Disposition': 'attachment; filename="shopping_list.txt"'},
-            content_type='text/plain')
+            shopping_file += f"{key} - {value[0]} {value[1]}\n"
+        response = HttpResponse(content=shopping_file,
+                                content_type='text/plain')
+        response['Content-Disposition'] = ('attachment; '
+                                           'filename="shopping_file.txt"')
+        return response
 
     @staticmethod
     def post_recipe_in_selected_model(request, model, pk=None):
