@@ -63,21 +63,38 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
     """Serializer for get method on recipes."""
     tags = TagSerializer(many=True, read_only=True)
     ingredients = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
+
     author = CustomDjoserUserSerializer()
 
     class Meta:
         model = Recipe
         fields = ('name', 'tags', 'author', 'ingredients',
-                  'image', 'text', 'cooking_time',)
+                  'image', 'text', 'cooking_time', 'is_favorited',
+                  'is_in_shopping_cart',)
 
     def get_ingredients(self, obj):
         queryset = IngredientInRecipe.objects.filter(recipe=obj)
         serializer = ReadIngredientInRecipeSerializer(queryset, many=True)
         return serializer.data
 
+    def get_is_favorited(self, obj):
+        return self.is_in_model(self, obj, model=FavoriteRecipe)
+
+    def get_is_in_shopping_cart(self, obj):
+        return self.is_in_model(self, obj, model=ShoppingCart)
+
+    @staticmethod
+    def is_in_model(self, obj, model) -> bool:
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return False
+        return model.objects.filter(user=user, recipe=obj).exists()
+
 
 class ActionRecipeSerializer(serializers.ModelSerializer):
-    """Serializer for post, patch, delete methods on recipes."""
+    """Serializer for post, patch methods on recipes."""
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
