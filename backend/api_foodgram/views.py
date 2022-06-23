@@ -1,5 +1,5 @@
 from foodgram.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
-                             Tag)
+                             Tag, IngredientInRecipe)
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -73,16 +73,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False,
             permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
-        user = request.user
-        # recipes = ShoppingCart.objects.filter()
+        ingredients = dict()
+        recipes = Recipe.objects.filter(carts__user=request.user)
 
-        # recipies = []
-        # for recipe_id in user.carts:
-        #     recipe = Recipe.objects.get(id=recipe_id)
-        #     for ingeredient in recipe.ingredients:
+        for recipe in recipes:
+            ingredients_in_recipe = (IngredientInRecipe.objects
+                                     .filter(recipe=recipe))
 
-        # user_carts_ingredients = []
+            for obj in ingredients_in_recipe:
+                if obj.ingredient.name in ingredients:
+                    ingredients[obj.ingredient.name][0] += obj.amount
+                else:
+                    ingredients.update({
+                        obj.ingredient.name: [obj.amount,
+                                              obj.ingredient.measurement_unit]
+                    })
 
+        shopping_list = ''
+        for key, value in ingredients.items():
+            shopping_list += f"{key} - {value[0]} {value[1]}\n"
+        return Response(
+            data=shopping_list,
+            headers={'Content-Disposition': 'attachment; filename="shopping_list.txt"'},
+            content_type='text/plain')
 
     @staticmethod
     def post_recipe_in_selected_model(request, model, pk=None):
