@@ -1,9 +1,9 @@
-from foodgram.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
-                             Tag, TagInRecipe, IngredientInRecipe)
-from users.models import User
-from users.serializers import CustomDjoserUserSerializer
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
+
+from foodgram.models import (FavoriteRecipe, Ingredient, IngredientInRecipe,
+                             Recipe, ShoppingCart, Tag, TagInRecipe)
+from users.serializers import CustomDjoserUserSerializer
+
 from .fields import Base64ToImageField
 
 

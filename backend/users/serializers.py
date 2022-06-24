@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Follow, User
+from .models import Follow
 
 
 class CustomDjoserUserCreateSerializer(UserCreateSerializer):
@@ -30,8 +30,6 @@ class CustomDjoserUserSerializer(UserSerializer):
         if user.is_anonymous:
             return False
         return Follow.objects.filter(user=user, following=obj).exists()
-
-
 
 
 class PostFollowSerializer(serializers.ModelSerializer):

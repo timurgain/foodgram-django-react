@@ -1,7 +1,7 @@
 from django.http import HttpResponse
-from foodgram.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
-                             Tag, IngredientInRecipe)
-from rest_framework import permissions, status, viewsets
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -10,6 +10,8 @@ from api_foodgram.serializers import (ActionRecipeSerializer,
                                       IngredientSerializer,
                                       LiteRecipeSerializer,
                                       ReadRecipeSerializer, TagSerializer)
+from foodgram.models import (FavoriteRecipe, Ingredient, IngredientInRecipe,
+                             Recipe, ShoppingCart, Tag)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -22,11 +24,15 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet for Ingredient model in the foodgram app."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('^name',)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """ViewSet for Recipe model in the foodgram app."""
     queryset = Recipe.objects.all()
+    filterset_fields = [
+        'is_favorited', 'is_in_shopping_cart', 'author', 'tags']
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH',):
