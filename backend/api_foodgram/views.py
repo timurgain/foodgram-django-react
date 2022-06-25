@@ -13,6 +13,8 @@ from api_foodgram.serializers import (ActionRecipeSerializer,
 from foodgram.models import (FavoriteRecipe, Ingredient, IngredientInRecipe,
                              Recipe, ShoppingCart, Tag)
 
+from .filters import RecipeFilter
+
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet for Tag model in the foodgram app."""
@@ -31,8 +33,9 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     """ViewSet for Recipe model in the foodgram app."""
     queryset = Recipe.objects.all()
-    filterset_fields = [
-        'is_favorited', 'is_in_shopping_cart', 'author', 'tags']
+    filter_class = RecipeFilter
+    filterset_fields = ('is_favorited', 'is_in_shopping_cart',
+                        'author', 'tags')
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH',):
