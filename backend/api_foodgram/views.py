@@ -14,16 +14,19 @@ from foodgram.models import (FavoriteRecipe, Ingredient, IngredientInRecipe,
                              Recipe, ShoppingCart, Tag)
 
 from .filters import RecipeFilter
+from .permissions import IsAuthorOrReadonly
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet for Tag model in the foodgram app."""
+    permission_classes = (permissions.AllowAny,)
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet for Ingredient model in the foodgram app."""
+    permission_classes = (permissions.AllowAny,)
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (filters.SearchFilter,)
@@ -32,6 +35,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """ViewSet for Recipe model in the foodgram app."""
+    permission_classes = (IsAuthorOrReadonly,)
     queryset = Recipe.objects.all()
     filter_class = RecipeFilter
     filterset_fields = ('is_favorited', 'is_in_shopping_cart',

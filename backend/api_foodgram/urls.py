@@ -9,13 +9,13 @@ app_name = 'api_foodgram'
 router_v1 = routers.DefaultRouter()
 
 router_v1.register(
-    prefix='tags', viewset=TagViewSet
+    prefix='tags', viewset=TagViewSet, basename='tags'
 )
 router_v1.register(
-    prefix='recipes', viewset=RecipeViewSet
+    prefix='recipes', viewset=RecipeViewSet, basename='recipes'
 )
 router_v1.register(
-    prefix='ingredients', viewset=IngredientViewSet, basename='ingredient'
+    prefix='ingredients', viewset=IngredientViewSet, basename='ingredients'
 )
 
 urlpatterns = [
