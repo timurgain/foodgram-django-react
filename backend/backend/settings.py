@@ -7,10 +7,11 @@ load_dotenv()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.getenv('SECRET_KEY', default='some_key')
+SECRET_KEY = os.getenv(
+    'SECRET_KEY', default='dav(nu-me=hf)v2v9i*ip@egw+9!#$*g8ofzfp9-7a9ujgui)e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = (os.getenv('ALLOWED_HOSTS', default='localhost')).split()
 
@@ -51,21 +52,23 @@ REST_FRAMEWORK = {
         'user': '500/minute',
         'anon': '100/minute',
     },
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': ('rest_framework.pagination'
+                                 '.PageNumberPagination'),
     'PAGE_SIZE': 5,
 }
 
 DJOSER = {
-   'LOGIN_FIELD': 'email',
-   'HIDE_USERS': False,
-   # https://djoser.readthedocs.io/en/latest/settings.html#serializers
-   'SERIALIZERS': {
-       'user_create': 'users.serializers.CustomDjoserUserCreateSerializer',
-       'user': 'users.serializers.CustomDjoserUserSerializer',
-   },
-   'PERMISSIONS': {
-       'user': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
-   },
+    'LOGIN_FIELD': 'email',
+    'HIDE_USERS': False,
+    # https://djoser.readthedocs.io/en/latest/settings.html#serializers
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.CustomDjoserUserCreateSerializer',
+        'user': 'users.serializers.CustomDjoserUserSerializer',
+    },
+    'PERMISSIONS': {
+        'user': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
+        'user_list': ['rest_framework.permissions.AllowAny'],
+    },
 }
 
 MIDDLEWARE = [
@@ -98,19 +101,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME', default='mydatabase'),
-        'USER': os.getenv('DB_USER', default='mydatabaseuser'),
-        'PASSWORD': os.getenv('USER_PASSWORD', default='mypassword'),
+        'USER': os.getenv('POSTGRES_USER', default='mydatabaseuser'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='mypassword'),
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }

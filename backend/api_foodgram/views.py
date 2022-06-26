@@ -1,6 +1,5 @@
 from django.http import HttpResponse
 
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404

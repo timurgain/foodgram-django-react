@@ -21,8 +21,8 @@ def write_ingredients_to_postgres(ingredients: List[dict]):
         conn = psycopg2.connect(
             host="localhost",
             database=os.getenv('DB_NAME'),
-            user=os.getenv('DB_USER'),
-            password=os.getenv('USER_PASSWORD'))
+            user=os.getenv('POSTGRES_USER'),
+            password=os.getenv('POSTGRES_PASSWORD'))
         print(f"Database connection established at {conn}")
 
         # create a cursor
