@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv(
     'SECRET_KEY', default='dav(nu-me=hf)v2v9i*ip@egw+9!#$*g8ofzfp9-7a9ujgui)e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = (os.getenv('ALLOWED_HOSTS', default='localhost')).split()
 
@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
+    'colorfield',
     'api_foodgram.apps.ApiFoodgramConfig',
     'foodgram.apps.FoodgramConfig',
     'users.apps.UsersConfig',
@@ -151,5 +152,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+if DEBUG:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static/'),
+    ]
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

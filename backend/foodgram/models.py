@@ -1,6 +1,7 @@
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
+from colorfield.fields import ColorField
 
 
 class Tag(models.Model):
@@ -11,16 +12,10 @@ class Tag(models.Model):
         db_index=True,
         unique=True,
     )
-    color = models.CharField(
+    color = ColorField(
         verbose_name='HEX-цвет тега',
-        max_length=7,
-        unique=True,
-        validators=(
-            RegexValidator(
-                regex=r'^#(?:[0-9a-fA-F]{3}){1,2}$',
-                message='Ожидается цветовой HEX-код, например, #49B64E'
-            ),
-        )
+        format='hex',
+        default='#49B64E',
     )
     slug = models.SlugField(
         verbose_name='Удобочитаемая метка URL',
