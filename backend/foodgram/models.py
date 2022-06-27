@@ -30,7 +30,7 @@ class Tag(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -45,13 +45,11 @@ class TagInRecipe(models.Model):
         to='Tag',
         blank=True,
         on_delete=models.CASCADE,
-        # related_name='recipe',
         verbose_name='Тег',
     )
     recipe = models.ForeignKey(
         to='Recipe',
         on_delete=models.CASCADE,
-        # related_name='tag',
         verbose_name='Рецепт',
     )
 
@@ -74,7 +72,7 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name',)
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
         constraints = (
@@ -94,13 +92,11 @@ class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
         to='Recipe',
         on_delete=models.CASCADE,
-        # related_name='ingredients_in_recipe',
         verbose_name='Рецепт',
     )
     ingredient = models.ForeignKey(
         to='Ingredient',
         on_delete=models.CASCADE,
-        # related_name='ingredients_in_recipe',
         verbose_name='Инградиент',
     )
     amount = models.PositiveSmallIntegerField(
@@ -169,7 +165,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ['-updated_at']
+        ordering = ('-updated_at',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         constraints = (
@@ -207,7 +203,7 @@ class FavoriteRecipe(models.Model):
     )
 
     class Meta:
-        ordering = ['-updated_at']
+        ordering = ('-updated_at',)
         verbose_name = 'Список избранного'
         verbose_name_plural = 'Списки избранного'
         constraints = (
@@ -245,7 +241,7 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
-        ordering = ['-updated_at']
+        ordering = ('-updated_at',)
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         constraints = (
