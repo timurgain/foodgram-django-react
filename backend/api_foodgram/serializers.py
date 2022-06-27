@@ -60,7 +60,7 @@ class LiteRecipeSerializer(serializers.ModelSerializer):
 
 
 class ReadRecipeSerializer(serializers.ModelSerializer):
-    """Serializer for get method on recipes."""
+    """Serializer for recipe appearance."""
     tags = TagSerializer(many=True, read_only=True)
     ingredients = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
@@ -70,9 +70,11 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('name', 'tags', 'author', 'ingredients',
-                  'image', 'text', 'cooking_time', 'is_favorited',
-                  'is_in_shopping_cart',)
+
+        fields = (
+            'id', 'tags', 'author', 'ingredients', 'is_favorited',
+            'is_in_shopping_cart', 'name', 'image', 'text', 'cooking_time',
+        )
 
     def get_ingredients(self, obj):
         queryset = IngredientInRecipe.objects.filter(recipe=obj)
@@ -94,7 +96,7 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
 
 
 class ActionRecipeSerializer(serializers.ModelSerializer):
-    """Serializer for post, patch methods on recipes."""
+    """Serializer for post, patch methods on recipes, not for appearance."""
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
@@ -104,7 +106,7 @@ class ActionRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'tags', 'author', 'ingredients',
+        fields = ('name', 'tags', 'author', 'ingredients',
                   'image', 'text', 'cooking_time',)
 
     def to_representation(self, instance):
