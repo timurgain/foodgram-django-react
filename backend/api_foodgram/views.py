@@ -1,5 +1,3 @@
-from django.http import HttpResponse
-
 from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -9,11 +7,12 @@ from api_foodgram.serializers import (ActionRecipeSerializer,
                                       IngredientSerializer,
                                       LiteRecipeSerializer,
                                       ReadRecipeSerializer, TagSerializer)
-from foodgram.models import (FavoriteRecipe, Ingredient, IngredientInRecipe,
-                             Recipe, ShoppingCart, Tag)
+from foodgram.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
+                             Tag)
 
 from .filters import RecipeFilter
 from .permissions import IsAuthorOrReadonly
+from .services import get_ingredients_from_shopping_cart, get_shopping_file_pdf
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -86,30 +85,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False,
             permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
-        ingredients = dict()
-        recipes = Recipe.objects.filter(carts__user=request.user)
-
-        for recipe in recipes:
-            ingredients_in_recipe = (IngredientInRecipe.objects
-                                     .filter(recipe=recipe))
-
-            for obj in ingredients_in_recipe:
-                if obj.ingredient.name in ingredients:
-                    ingredients[obj.ingredient.name][0] += obj.amount
-                else:
-                    ingredients.update({
-                        obj.ingredient.name: [obj.amount,
-                                              obj.ingredient.measurement_unit]
-                    })
-
-        shopping_file = ''
-        for key, value in ingredients.items():
-            shopping_file += f"{key} - {value[0]} {value[1]}\n"
-        response = HttpResponse(content=shopping_file,
-                                content_type='text/plain')
-        response['Content-Disposition'] = ('attachment; '
-                                           'filename="shopping_file.txt"')
-        return response
+        ingredients = get_ingredients_from_shopping_cart(request)
+        return get_shopping_file_pdf(ingredients)
 
     @staticmethod
     def post_recipe_in_selected_model(request, model, pk=None):
