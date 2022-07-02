@@ -7,11 +7,10 @@ load_dotenv()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.getenv(
-    'SECRET_KEY', default='dav(nu-me=hf)v2v9i*ip@egw+9!#$*g8ofzfp9-7a9ujgui)e')
+SECRET_KEY = os.getenv('SECRET_KEY', default='some_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = (os.getenv('ALLOWED_HOSTS', default='localhost')).split()
 
@@ -158,7 +157,7 @@ if DEBUG:
         os.path.join(BASE_DIR, 'static/'),
     ]
 else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
