@@ -154,7 +154,7 @@ STATIC_URL = '/static_backend/'
 
 if DEBUG:
     STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static_backend/'),
+        os.path.join(BASE_DIR, 'static_backend'),
     ]
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static_backend')
