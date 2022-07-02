@@ -12,8 +12,8 @@ services:
     image: timurgain/foodgram_backend:latest
     restart: always
     volumes:
-      - static_volume:/app/static_volume
-      - media_volume:/app/media_volume
+      - static_volume:/app/static_backend
+      - media_volume:/app/media_backend
     env_file:
       - ../.env
     depends_on:
