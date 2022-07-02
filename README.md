@@ -16,11 +16,14 @@ On this service, users will be able to publish recipes, subscribe to publication
 ## .env example
 
 ```
-django
+# django
 SECRET_KEY=
+ALLOWED_HOSTS=
 
-postgresql
+# postgresql
 DB_NAME=
-DB_USER=
-USER_PASSWORD=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+DB_HOST=
+DB_PORT=
 ```
