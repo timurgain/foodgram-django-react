@@ -107,7 +107,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', default='mydatabase'),
         'USER': os.getenv('POSTGRES_USER', default='mydatabaseuser'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='mypassword'),
-        'HOST': os.getenv('DB_HOST', default='database'),
+        'HOST': os.getenv('DB_HOST', default='db'),
         'PORT': os.getenv('DB_PORT', default='5432')
     }
 }
@@ -150,14 +150,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static_backend/'
 
 if DEBUG:
     STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static/'),
+        os.path.join(BASE_DIR, 'static_backend/'),
     ]
 else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static_backend')
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media_backend/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_backend')
