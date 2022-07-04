@@ -1,4 +1,6 @@
 # Foodgram app / Django / React
+![yamdb_workflow](https://github.com/timurgain/foodgram-project-react
+/actions/workflows/yamdb_workflow.yaml/badge.svg)
 
 ## Description 
  
@@ -11,7 +13,12 @@ On this service, users will be able to publish recipes, subscribe to publication
 - Python 3;
 - Django 2.2;
 - Django REST framework;
-- Postgres.
+- Postgres;
+- React;
+- Gunicorn;
+- NGINX;
+- Docker;
+- GitHub Actions
 
 ## .env example
 
