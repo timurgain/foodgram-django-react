@@ -1,5 +1,5 @@
 # Foodgram app / Django / React
-![yamdb_workflow](https://github.com/timurgain/foodgram-project-react
+![foodgram_workflow](https://github.com/timurgain/foodgram-project-react
 /actions/workflows/foodgram_workflow.yaml/badge.svg)
 
 ## Description 
