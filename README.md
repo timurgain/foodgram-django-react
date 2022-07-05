@@ -1,6 +1,6 @@
 # Foodgram app / Django / React
 ![foodgram_workflow](https://github.com/timurgain/foodgram-project-react
-/actions/workflows/foodgram_workflow.yaml/badge.svg)
+/actions/workflows/foodgram_workflow.yml/badge.svg)
 
 ## Description 
  
@@ -28,6 +28,7 @@ SECRET_KEY=
 ALLOWED_HOSTS=
 
 # postgresql
+DB_ENGINE=
 DB_NAME=
 POSTGRES_USER=
 POSTGRES_PASSWORD=
