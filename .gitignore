@@ -3,6 +3,7 @@ api_tm_tester.html
 launch.json
 .vscode
 media/
+infra/*@84*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

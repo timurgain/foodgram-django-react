@@ -6,7 +6,7 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql/data/
     env_file:
-      - ../.env
+      - ./.env
 
   backend:
     image: timurgain/foodgram_backend:latest
@@ -15,16 +15,16 @@ services:
       - static_volume:/app/static_backend/
       - media_volume:/app/media_backend/
     env_file:
-      - ../.env
+      - ./.env
     depends_on:
       - db
 
   frontend:
     build:
-      context: ../frontend
+      context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      - ../frontend/:/app/result_build/
+      - ./frontend/:/app/result_build/
   
   nginx:
     image: nginx:1.19.3

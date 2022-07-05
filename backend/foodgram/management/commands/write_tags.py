@@ -34,7 +34,7 @@ class Command(BaseCommand):
         try:
             # create a connection to db
             conn = psycopg2.connect(
-                host="localhost",
+                host=os.getenv('DB_HOST'),
                 database=os.getenv('DB_NAME'),
                 user=os.getenv('POSTGRES_USER'),
                 password=os.getenv('POSTGRES_PASSWORD'))
