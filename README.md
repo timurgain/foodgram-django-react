@@ -23,7 +23,7 @@ On this service, users will be able to publish recipes, subscribe to publication
 ## .env example
 
 ```
-# django
+# django_
 DJANGO_SECRET_KEY=
 ALLOWED_HOSTS=
 
