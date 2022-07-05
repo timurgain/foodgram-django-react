@@ -24,7 +24,7 @@ On this service, users will be able to publish recipes, subscribe to publication
 
 ```
 # django
-SECRET_KEY=
+DJANGO_SECRET_KEY=
 ALLOWED_HOSTS=
 
 # postgresql
