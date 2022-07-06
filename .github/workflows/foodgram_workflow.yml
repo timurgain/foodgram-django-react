@@ -72,7 +72,7 @@ jobs:
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-            # docker-compose.yaml, nginx.conf, frontend folder must be uploaded to the server manually in advance
+            # docker-compose.yaml, nginx.conf, docs and frontend folder must be uploaded to the server manually in advance
             sudo docker compose up -d --build
 
   set_up_django_app:
@@ -88,8 +88,8 @@ jobs:
           script: |
             sudo docker compose exec backend python manage.py makemigrations
             sudo docker compose exec backend python manage.py migrate
-            # sudo docker compose exec backend python manage.py write_ingredients
-            # sudo docker compose exec backend python manage.py write_tags
+            sudo docker compose exec backend python manage.py write_ingredients
+            sudo docker compose exec backend python manage.py write_tags
             sudo docker compose exec backend python manage.py collectstatic --no-input
 
   notify:
