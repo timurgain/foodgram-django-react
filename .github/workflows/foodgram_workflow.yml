@@ -88,8 +88,8 @@ jobs:
           script: |
             sudo docker compose exec backend python manage.py makemigrations
             sudo docker compose exec backend python manage.py migrate
-            sudo docker compose exec backend python manage.py write_ingredients
-            sudo docker compose exec backend python manage.py write_tags
+            # sudo docker compose exec backend python manage.py write_ingredients
+            # sudo docker compose exec backend python manage.py write_tags
             sudo docker compose exec backend python manage.py collectstatic --no-input
 
   notify:
