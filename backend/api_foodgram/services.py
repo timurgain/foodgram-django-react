@@ -56,12 +56,13 @@ def get_shopping_file_pdf(ingredients: dict) -> HttpResponse:
 
     buffer = io.BytesIO()
     pdf_obj = canvas.Canvas(buffer)
-    pdfmetrics.registerFont(TTFont('Tahoma', 'Tahoma.ttf'))
-    pdf_obj.setFont('Tahoma', params['HEAD_FONT_SIZE'])
+    pdfmetrics.registerFont(TTFont(
+        'Comfortaa-light', 'data/Comfortaa-Light.ttf'))
+    pdf_obj.setFont('Comfortaa-light', params['HEAD_FONT_SIZE'])
     pdf_obj.drawString(
         params['X_START'], params['Y_START'], "Foodgram ingredients list:")
 
-    pdf_obj.setFont('Tahoma', params['TEXT_FONT_SIZE'])
+    pdf_obj.setFont('Comfortaa-light', params['TEXT_FONT_SIZE'])
     for key, value in ingredients.items():
         params['Y_START'] -= (params['TEXT_FONT_SIZE'] * 2)
         ingredient = f"- {key} - {value[0]} {value[1]}"
