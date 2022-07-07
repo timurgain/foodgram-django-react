@@ -215,7 +215,7 @@ class FavoriteRecipe(models.Model):
         )
 
     def __str__(self) -> str:
-        return f"Список избранных рецептов у пользователя {self.owner}"
+        return f"Список избранных рецептов у пользователя {self.user}"
 
 
 class ShoppingCart(models.Model):
@@ -253,4 +253,4 @@ class ShoppingCart(models.Model):
         )
 
     def __str__(self) -> str:
-        return f"Список покупок пользователя {self.owner}"
+        return f"Список покупок пользователя {self.user}"
