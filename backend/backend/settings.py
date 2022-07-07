@@ -14,6 +14,20 @@ DEBUG = True
 
 ALLOWED_HOSTS = (os.getenv('ALLOWED_HOSTS', default='localhost')).split()
 
+STATIC_URL = '/static_backend/'
+
+# if DEBUG:
+#     STATICFILES_DIRS = [
+#         os.path.join(BASE_DIR, 'static_backend'),
+#     ]
+# else:
+#     STATIC_ROOT = os.path.join(BASE_DIR, 'static_backend')
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_backend')
+
+MEDIA_URL = '/media_backend/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_backend')
+
 
 # Application definition
 
@@ -146,19 +160,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = '/static_backend/'
-
-if DEBUG:
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static_backend'),
-    ]
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static_backend')
-
-MEDIA_URL = '/media_backend/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media_backend')
