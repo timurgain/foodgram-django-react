@@ -1,4 +1,5 @@
 import django_filters
+from django_filters import widgets
 
 from foodgram.models import Recipe
 
@@ -9,6 +10,7 @@ class RecipeFilter(django_filters.FilterSet):
     is_favorited = django_filters.BooleanFilter(
         method='is_favorited_filter',
         label='is_favorited',
+        widget=widgets.BooleanWidget(),
     )
     is_in_shopping_cart = django_filters.BooleanFilter(
         method='is_in_shopping_cart_filter',
