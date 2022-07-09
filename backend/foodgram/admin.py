@@ -23,12 +23,18 @@ class IngredientInRecipeAdmin(admin.ModelAdmin):
     search_fields = ('recipe', 'ingredient',)
 
 
+class IngredientInRecipeInline(admin.TabularInline):
+    model = IngredientInRecipe
+    extra = 1
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'is_favorite_count')
     readonly_fields = ('is_favorite_count',)
     list_filter = ('name', 'tags', 'author',)
     search_fields = ('name',)
+    inlines = (IngredientInRecipeInline,)
 
     def is_favorite_count(self, obj):
         return obj.lovers.count()
