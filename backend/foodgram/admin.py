@@ -23,7 +23,7 @@ class IngredientInRecipeAdmin(admin.ModelAdmin):
     search_fields = ('recipe', 'ingredient',)
 
 
-class IngredientInRecipeInline(admin.TabularInline):
+class IngredientInRecipeInline(admin.StackedInline):
     model = IngredientInRecipe
     extra = 1
 
