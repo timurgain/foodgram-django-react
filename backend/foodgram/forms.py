@@ -7,6 +7,7 @@ from .models import Ingredient, Recipe
 class RecipeAdminForm(forms.ModelForm):
     class Meta:
         model = Recipe
+        fields = '__all__'
 
     ingredients = forms.ModelMultipleChoiceField(
         queryset=Ingredient.objects.all(),
