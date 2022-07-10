@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from .forms import RecipeAdminForm
 from .models import (FavoriteRecipe, Ingredient, IngredientInRecipe, Recipe,
                      ShoppingCart, Tag, TagInRecipe)
 
@@ -28,6 +27,11 @@ class IngredientInRecipeInline(admin.TabularInline):
     model = IngredientInRecipe
     extra = 1
 
+    def get_queryset(self, request):
+        queryset = super(IngredientInRecipeInline, self).get_queryset(request)
+        queryset = queryset.filter(name=request.get('name'))
+        return queryset
+
 
 class TagInRecipeInline(admin.TabularInline):
     model = TagInRecipe
@@ -36,13 +40,11 @@ class TagInRecipeInline(admin.TabularInline):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    form = RecipeAdminForm
     list_display = ('name', 'author', 'is_favorite_count')
     readonly_fields = ('is_favorite_count',)
     list_filter = ('name', 'tags', 'author',)
     search_fields = ('name',)
-    # inlines = (IngredientInRecipeInline, TagInRecipeInline,)
-    filter_vertical = ('ingredients',)
+    inlines = (IngredientInRecipeInline, TagInRecipeInline,)
 
     def is_favorite_count(self, obj):
         return obj.lovers.count()
