@@ -29,7 +29,7 @@ class IngredientInRecipeInline(admin.TabularInline):
 
     def get_queryset(self, request):
         queryset = super(IngredientInRecipeInline, self).get_queryset(request)
-        queryset = queryset.filter(name=request.get('name'))
+        queryset = queryset.filter(ingredients=request.data['ingredients'])
         return queryset
 
 
