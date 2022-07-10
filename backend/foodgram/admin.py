@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (FavoriteRecipe, Ingredient, IngredientInRecipe, Recipe,
-                     ShoppingCart, Tag)
+                     ShoppingCart, Tag, TagInRecipe)
 
 
 @admin.register(Tag)
@@ -23,8 +23,13 @@ class IngredientInRecipeAdmin(admin.ModelAdmin):
     search_fields = ('recipe', 'ingredient',)
 
 
-class IngredientInRecipeInline(admin.StackedInline):
+class IngredientInRecipeInline(admin.TabularInline):
     model = IngredientInRecipe
+    extra = 1
+
+
+class TagInRecipeInline(admin.TabularInline):
+    model = TagInRecipe
     extra = 1
 
 
@@ -34,8 +39,8 @@ class RecipeAdmin(admin.ModelAdmin):
     readonly_fields = ('is_favorite_count',)
     list_filter = ('name', 'tags', 'author',)
     search_fields = ('name',)
-    inlines = (IngredientInRecipeInline,)
-    filter_horizontal = ('ingredient',)
+    inlines = (IngredientInRecipeInline, TagInRecipeInline,)
+    filter_horizontal = ('ingredient', 'tag')
 
     def is_favorite_count(self, obj):
         return obj.lovers.count()
