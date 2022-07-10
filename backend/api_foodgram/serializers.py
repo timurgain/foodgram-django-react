@@ -19,8 +19,8 @@ class IngredientSerializer(serializers.ModelSerializer):
     """Serializer for Ingredient model in the foodgram app."""
     class Meta:
         model = Ingredient
-        fields = ('name', 'measurement_unit')
-        read_only_fields = ('name', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit')
+        read_only_fields = ('id', 'name', 'measurement_unit')
 
 
 class ReadIngredientInRecipeSerializer(serializers.ModelSerializer):

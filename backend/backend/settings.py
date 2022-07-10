@@ -115,17 +115,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE',
-                            default='django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', default='mydatabase'),
-        'USER': os.getenv('POSTGRES_USER', default='mydatabaseuser'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='mypassword'),
-        'HOST': os.getenv('DB_HOST', default='db'),
-        'PORT': os.getenv('DB_PORT', default='5432')
+RUN_LOCAL_DEBUG = os.getenv('RUN_LOCAL_DEBUG', default=0)
+if RUN_LOCAL_DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'foodgram_db',
+            'USER': 'practicum',
+            'PASSWORD': 'practicum',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+     }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE',
+                                default='django.db.backends.postgresql'),
+            'NAME': os.getenv('DB_NAME', default='mydatabase'),
+            'USER': os.getenv('POSTGRES_USER', default='mydatabaseuser'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='mypassword'),
+            'HOST': os.getenv('DB_HOST', default='db'),
+            'PORT': os.getenv('DB_PORT', default='5432')
+        }
     }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
