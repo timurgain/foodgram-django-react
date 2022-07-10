@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
-from .models import Ingredient, Recipe
+from .models import IngredientInRecipe, Recipe
 
 
 class RecipeAdminForm(forms.ModelForm):
@@ -10,7 +10,7 @@ class RecipeAdminForm(forms.ModelForm):
         fields = '__all__'
 
     ingredients = forms.ModelMultipleChoiceField(
-        queryset=Ingredient.objects.all(),
+        queryset=IngredientInRecipe.objects.all(),
         required=False,
         widget=FilteredSelectMultiple(
             verbose_name='Ingredients',
@@ -22,7 +22,8 @@ class RecipeAdminForm(forms.ModelForm):
         super(RecipeAdminForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
             self.fields['ingredients'].initial = (self.instance
-                                                  .ingredient_set.all())
+                                                  .ingredientinrecipe_set
+                                                  .all())
 
     def save(self, commit=True):
         recipe = super(RecipeAdminForm, self).save(commit=False)
@@ -30,7 +31,8 @@ class RecipeAdminForm(forms.ModelForm):
             recipe.save()
 
         if recipe.pk:
-            recipe.ingredient_set = self.cleaned_data['ingredients']
+            recipe.ingreingredientinrecipe_set = (self
+                                                  .cleaned_data['ingredients'])
             self.save_m2m()
 
         return recipe
