@@ -9,25 +9,45 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', default='some_key')
 
+RUN_LOCAL_DEBUG = os.getenv('RUN_LOCAL_DEBUG', default=0)
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = (os.getenv('ALLOWED_HOSTS', default='localhost')).split()
 
+AUTH_USER_MODEL = 'users.User'
+
 STATIC_URL = '/static_backend/'
-
-# if DEBUG:
-#     STATICFILES_DIRS = [
-#         os.path.join(BASE_DIR, 'static_backend'),
-#     ]
-# else:
-#     STATIC_ROOT = os.path.join(BASE_DIR, 'static_backend')
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_backend')
-
 MEDIA_URL = '/media_backend/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_backend')
 
+if RUN_LOCAL_DEBUG:
+    DEBUG = True
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_backend')]
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'foodgram_db',
+            'USER': 'practicum',
+            'PASSWORD': 'practicum',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static_backend')
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE',
+                                default='django.db.backends.postgresql'),
+            'NAME': os.getenv('DB_NAME', default='mydatabase'),
+            'USER': os.getenv('POSTGRES_USER', default='mydatabaseuser'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='mypassword'),
+            'HOST': os.getenv('DB_HOST', default='db'),
+            'PORT': os.getenv('DB_PORT', default='5432')
+        }
+    }
 
 # Application definition
 
@@ -66,9 +86,11 @@ REST_FRAMEWORK = {
         'user': '500/minute',
         'anon': '100/minute',
     },
-    'DEFAULT_PAGINATION_CLASS': ('rest_framework.pagination'
-                                 '.PageNumberPagination'),
-    'PAGE_SIZE': 5,
+    # 'DEFAULT_PAGINATION_CLASS': ('rest_framework.pagination'
+    #                              '.PageNumberPagination'),
+    # 'PAGE_SIZE': 5,
+    'DEFAULT_PAGINATION_CLASS': ('api_foodgram'
+                                 '.paginations.CustomPageNumberPagination'),
 }
 
 DJOSER = {
@@ -115,31 +137,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-RUN_LOCAL_DEBUG = os.getenv('RUN_LOCAL_DEBUG', default=0)
-if RUN_LOCAL_DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'foodgram_db',
-            'USER': 'practicum',
-            'PASSWORD': 'practicum',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': os.getenv('DB_ENGINE',
-                                default='django.db.backends.postgresql'),
-            'NAME': os.getenv('DB_NAME', default='mydatabase'),
-            'USER': os.getenv('POSTGRES_USER', default='mydatabaseuser'),
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='mypassword'),
-            'HOST': os.getenv('DB_HOST', default='db'),
-            'PORT': os.getenv('DB_PORT', default='5432')
-        }
-    }
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -157,9 +154,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-AUTH_USER_MODEL = 'users.User'
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
