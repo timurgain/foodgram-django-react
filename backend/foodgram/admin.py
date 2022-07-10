@@ -27,11 +27,6 @@ class IngredientInRecipeInline(admin.TabularInline):
     model = IngredientInRecipe
     extra = 1
 
-    def get_queryset(self, request):
-        queryset = super(IngredientInRecipeInline, self).get_queryset(request)
-        queryset = queryset.filter(ingredients=request.data['ingredients'])
-        return queryset
-
 
 class TagInRecipeInline(admin.TabularInline):
     model = TagInRecipe
