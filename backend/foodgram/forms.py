@@ -22,7 +22,7 @@ class RecipeAdminForm(forms.ModelForm):
         super(RecipeAdminForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
             self.fields['ingredients'].initial = (self.instance
-                                                  .ingredients_set.all())
+                                                  .ingredient_set.all())
 
     def save(self, commit=True):
         recipe = super(RecipeAdminForm, self).save(commit=False)
@@ -30,7 +30,7 @@ class RecipeAdminForm(forms.ModelForm):
             recipe.save()
 
         if recipe.pk:
-            recipe.ingredients_set = self.cleaned_data['ingredients']
+            recipe.ingredient_set = self.cleaned_data['ingredients']
             self.save_m2m()
 
         return recipe
