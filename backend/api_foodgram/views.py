@@ -1,4 +1,4 @@
-from rest_framework import filters, permissions, status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -10,7 +10,7 @@ from api_foodgram.serializers import (ActionRecipeSerializer,
 from foodgram.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                              Tag)
 
-from .filters import RecipeFilter, IngredientSearchFilter
+from .filters import IngredientSearchFilter, RecipeFilter
 from .permissions import IsAuthorOrReadonly
 from .services import get_ingredients_from_shopping_cart, get_shopping_file_pdf
 
