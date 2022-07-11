@@ -86,9 +86,6 @@ REST_FRAMEWORK = {
         'user': '500/minute',
         'anon': '100/minute',
     },
-    # 'DEFAULT_PAGINATION_CLASS': ('rest_framework.pagination'
-    #                              '.PageNumberPagination'),
-    # 'PAGE_SIZE': 5,
     'DEFAULT_PAGINATION_CLASS': ('api_foodgram'
                                  '.paginations.CustomPageNumberPagination'),
 }

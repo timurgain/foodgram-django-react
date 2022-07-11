@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Follow
+# from api_foodgram.serializers import ReadRecipeSerializer
 
 
 class CustomDjoserUserCreateSerializer(UserCreateSerializer):
@@ -18,11 +19,13 @@ class CustomDjoserUserSerializer(UserSerializer):
     """Custom serializer for model User via Djoser."""
 
     is_subscribed = serializers.SerializerMethodField()
+    # recipes = ReadRecipeSerializer(many=True)
 
     class Meta(UserSerializer.Meta):
         fields = (
             'email', 'id', 'username', 'first_name', 'last_name',
             'is_subscribed',
+            # 'recipes',
         )
 
     def get_is_subscribed(self, obj):

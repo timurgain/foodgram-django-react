@@ -1,5 +1,6 @@
 import django_filters
 from django_filters import widgets
+from rest_framework import filters
 
 from foodgram.models import Recipe
 
@@ -34,3 +35,8 @@ class RecipeFilter(django_filters.FilterSet):
         if value:
             return queryset.filter(carts__user=self.request.user)
         return queryset
+
+
+class IngredientSearchFilter(filters.SearchFilter):
+    """Sets up the search_param to 'name' instead of 'search' in a url."""
+    search_param = 'name'

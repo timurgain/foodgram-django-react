@@ -10,7 +10,7 @@ from api_foodgram.serializers import (ActionRecipeSerializer,
 from foodgram.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                              Tag)
 
-from .filters import RecipeFilter
+from .filters import RecipeFilter, IngredientSearchFilter
 from .permissions import IsAuthorOrReadonly
 from .services import get_ingredients_from_shopping_cart, get_shopping_file_pdf
 
@@ -28,7 +28,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (permissions.AllowAny,)
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (IngredientSearchFilter,)
     search_fields = ('^name',)
     pagination_class = None
 

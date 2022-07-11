@@ -1,6 +1,5 @@
 # Foodgram app / Django / React
-![foodgram_workflow](https://github.com/timurgain/foodgram-project-react
-/actions/workflows/foodgram_workflow.yml/badge.svg)
+![foodgram_workflow](https://github.com/timurgain/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 
 ## Description 
  
@@ -14,16 +13,16 @@ On this service, users will be able to publish recipes, subscribe to publication
 - Django 2.2;
 - Django REST framework;
 - Postgres;
-- React;
 - Gunicorn;
 - NGINX;
 - Docker;
-- GitHub Actions
+- GitHub Actions;
+- React (prepared for me).
 
 ## .env example
 
 ```
-# django_
+# django
 DJANGO_SECRET_KEY=
 ALLOWED_HOSTS=
 
