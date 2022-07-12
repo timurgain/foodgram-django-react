@@ -2,8 +2,9 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Follow
 from foodgram.models import Recipe
+
+from .models import Follow
 
 # from api_foodgram.serializers import ReadRecipeSerializer
 
