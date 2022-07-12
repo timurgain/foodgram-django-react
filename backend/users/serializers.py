@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Follow
+from foodgram.models import Recipe
 
 # from api_foodgram.serializers import ReadRecipeSerializer
 
@@ -20,13 +21,13 @@ class CustomDjoserUserSerializer(UserSerializer):
     """Custom serializer for model User via Djoser."""
 
     is_subscribed = serializers.SerializerMethodField()
-    # recipes = ReadRecipeSerializer(many=True)
+    recipes = serializers.SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
         fields = (
             'email', 'id', 'username', 'first_name', 'last_name',
             'is_subscribed',
-            # 'recipes',
+            'recipes',
         )
 
     def get_is_subscribed(self, obj):
@@ -34,6 +35,23 @@ class CustomDjoserUserSerializer(UserSerializer):
         if user.is_anonymous:
             return False
         return Follow.objects.filter(user=user, following=obj).exists()
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        recipes_limit = request.query_params.get('recipes_limit')
+        author_recipes = obj.recipes.all()
+        if recipes_limit:
+            return LiteRecipeSerializer(
+                instance=author_recipes[:int(recipes_limit)], many=True).data
+        return LiteRecipeSerializer(
+            instance=author_recipes, many=True).data
+
+
+class LiteRecipeSerializer(serializers.ModelSerializer):
+    """Serializer for response when adding a recipe to favorites."""
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class PostFollowSerializer(serializers.ModelSerializer):
