@@ -23,6 +23,10 @@ On this service, users will be able to publish recipes, subscribe to publication
 [The main Foodgram page](http://51.250.101.61/) 
 
 [A ReDoc page](http://51.250.101.61/api/redoc/)
+```
+Admin (tm / super1super1)
+User One (one@e.ru / one1one1)
+```
 
 ## .env example
 
