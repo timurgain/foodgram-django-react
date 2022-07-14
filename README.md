@@ -110,4 +110,4 @@ python3 manage.py runserver
 
 ## The autors
 The app made by - [Timur Gainutdinov](https://github.com/timurgain)
-as part of training at Yandex.Practicum
+as part of the training at Yandex.Practicum
