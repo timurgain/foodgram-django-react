@@ -20,9 +20,9 @@ On this service, users will be able to publish recipes, subscribe to publication
 - React (prepared for me).
 
 ## Site
-[The main Foodgram page](http://51.250.101.61/) 
+[The main Foodgram page](http://84.201.179.139/) 
 
-[A ReDoc page](http://51.250.101.61/api/redoc/)
+[A ReDoc page](http://84.201.179.139/api/redoc/)
 ```
 Admin (tm / super1super1)
 User One (one@e.ru / one1one1)
