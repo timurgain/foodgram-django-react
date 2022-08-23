@@ -23,10 +23,6 @@ On this service, users will be able to publish recipes, subscribe to publication
 [The main Foodgram page](http://84.201.179.139/) 
 
 [A ReDoc page](http://84.201.179.139/api/docs/)
-```
-Admin (tm / super1super1)
-User One (one@e.ru / one1one1)
-```
 
 ## .env example
 
